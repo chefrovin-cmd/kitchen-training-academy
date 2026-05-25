@@ -21,7 +21,7 @@ export function Header() {
 
       <div className="flex items-center gap-4">
         <div className="text-right hidden sm:block">
-          <p className="text-sm font-medium">{user?.name || 'User'}</p>
+          <p className="text-sm font-medium">{user?.displayName || 'User'}</p>
           <p className="text-xs text-muted-foreground capitalize">{user?.role || 'staff'}</p>
         </div>
         <Button

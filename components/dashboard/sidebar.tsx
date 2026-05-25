@@ -78,7 +78,7 @@ export function Sidebar() {
       {/* User Footer */}
       <div className="p-4 border-t border-border space-y-2">
         <div className="px-2 py-2 text-sm">
-          <p className="font-medium">{user?.name || 'User'}</p>
+          <p className="font-medium">{user?.displayName || 'User'}</p>
           <p className="text-xs text-muted-foreground">{user?.role || 'staff'}</p>
         </div>
         <Button

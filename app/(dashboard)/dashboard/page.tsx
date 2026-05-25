@@ -46,6 +46,8 @@ export default function DashboardPage() {
           alt="Chef Rovin Dhar - KitchenPro Academy"
           fill
           className="object-cover"
+          loading="eager"
+          priority
         />
         <div className="absolute inset-0 bg-gradient-to-r from-black/60 to-transparent flex flex-col justify-center p-6 md:p-12">
           <div className="max-w-lg">

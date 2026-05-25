@@ -260,7 +260,7 @@ export async function getLeaderboard(limit_: number = 100): Promise<(User & { po
     const q = query(usersRef, orderBy('points', 'desc'), limit(limit_))
     const snapshot = await getDocs(q)
     return snapshot.docs.map((doc) => ({
-      id: doc.id,
+      uid: doc.id,
       ...doc.data(),
     })) as (User & { points: number })[]
   } catch (error) {
