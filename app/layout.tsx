@@ -53,3 +53,4 @@ export default function RootLayout({
     </html>
   )
 }
+import { SpeedInsights } from "@vercel/speed-insights/next"
