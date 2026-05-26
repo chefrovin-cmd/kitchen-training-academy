@@ -5,19 +5,18 @@ export function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname
 
   // Allow public routes
-  if (pathname.startsWith('/(auth)') || pathname === '/' || pathname === '/login' || pathname === '/signup') {
+  if (pathname === '/' || pathname === '/login' || pathname === '/signup' || pathname.startsWith('/api')) {
     return NextResponse.next()
   }
 
   // Check for auth token in cookies
   const authToken = request.cookies.get('__session')?.value
 
-  // Protect dashboard routes
+  // Protect dashboard and admin routes
   if (pathname.startsWith('/dashboard') || pathname.startsWith('/admin')) {
     if (!authToken) {
       // Redirect to login
-      const loginUrl = new URL('/login', request.url)
-      return NextResponse.redirect(loginUrl)
+      return NextResponse.redirect(new URL('/login', request.url))
     }
   }
 
@@ -26,6 +25,6 @@ export function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    '/((?!api|_next/static|_next/image|favicon.ico|public).*)',
+    '/((?!_next/static|_next/image|favicon.ico|public|images).*)',
   ],
 }

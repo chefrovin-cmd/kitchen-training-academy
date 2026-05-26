@@ -47,9 +47,12 @@ export default function SignupPage() {
     try {
       // Demo mode: allow any email to sign up
       if (formData.email && formData.name) {
-        // Store demo session
-        document.cookie = `__session=${btoa(formData.email)}; path=/; max-age=86400`
-        router.push('/dashboard')
+        // Store demo session with proper cookie settings
+        document.cookie = `__session=${btoa(formData.email)}; path=/; max-age=86400; SameSite=Lax`
+        // Small delay to ensure cookie is set before redirect
+        setTimeout(() => {
+          router.push('/dashboard')
+        }, 100)
       } else {
         setError('Please fill in all fields')
       }

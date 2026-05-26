@@ -26,9 +26,12 @@ export default function LoginPage() {
     try {
       // Demo mode: allow any email/password to log in
       if (email && password.length >= 6) {
-        // Store demo session
-        document.cookie = `__session=${btoa(email)}; path=/; max-age=86400`
-        router.push('/dashboard')
+        // Store demo session with proper cookie settings
+        document.cookie = `__session=${btoa(email)}; path=/; max-age=86400; SameSite=Lax`
+        // Small delay to ensure cookie is set before redirect
+        setTimeout(() => {
+          router.push('/dashboard')
+        }, 100)
       } else {
         setError('Please enter valid email and password (min 6 characters)')
       }
