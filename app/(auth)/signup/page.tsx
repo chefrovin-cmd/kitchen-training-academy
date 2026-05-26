@@ -45,8 +45,14 @@ export default function SignupPage() {
     setLoading(true)
 
     try {
-      await signup(formData.email, formData.password, formData.name)
-      router.push('/dashboard')
+      // Demo mode: allow any email to sign up
+      if (formData.email && formData.name) {
+        // Store demo session
+        document.cookie = `__session=${btoa(formData.email)}; path=/; max-age=86400`
+        router.push('/dashboard')
+      } else {
+        setError('Please fill in all fields')
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Signup failed. Please try again.')
     } finally {

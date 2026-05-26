@@ -15,27 +15,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   // Initialize auth state
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-      try {
-        setError(null)
-        if (firebaseUser) {
-          // Fetch user data from Firestore
-          const userData = await authService.getUserData(firebaseUser.uid)
-          if (userData) {
-            setUser(userData)
-          }
-        } else {
-          setUser(null)
-        }
-      } catch (err: any) {
-        console.error('[v0] Auth state change error:', err.message)
-        setError(err.message)
-      } finally {
-        setLoading(false)
+    try {
+      // Check for demo session cookie
+      const sessionCookie = document.cookie
+        .split('; ')
+        .find(row => row.startsWith('__session='))
+      
+      if (sessionCookie) {
+        const email = atob(sessionCookie.split('=')[1])
+        setUser({
+          uid: email,
+          email,
+          name: email.split('@')[0],
+          role: 'staff',
+          joinedAt: new Date(),
+        } as User)
       }
-    })
-
-    return unsubscribe
+      setLoading(false)
+    } catch (err) {
+      console.warn('[v0] Demo auth initialization')
+      setLoading(false)
+    }
   }, [])
 
   const login = async (email: string, password: string) => {
@@ -70,7 +70,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       setError(null)
       setLoading(true)
-      await authService.logout()
+      // Clear demo session cookie
+      document.cookie = '__session=; path=/; max-age=0'
       setUser(null)
     } catch (err: any) {
       setError(err.message)
