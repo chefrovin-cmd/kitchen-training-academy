@@ -8,11 +8,11 @@ import { useAuth } from '@/lib/auth-context'
 
 const navItems = [
   { label: 'Dashboard', href: '/dashboard', icon: ChefHat },
-  { label: 'Courses', href: '/dashboard/courses', icon: BookOpen },
-  { label: 'Recipes', href: '/dashboard/recipes', icon: UtensilsCrossed },
-  { label: 'Exams', href: '/dashboard/exams', icon: FileText },
-  { label: 'Psychometric', href: '/dashboard/psychometric', icon: Brain },
-  { label: 'Leaderboard', href: '/dashboard/leaderboard', icon: BarChart3 },
+  { label: 'Courses', href: '/courses', icon: BookOpen },
+  { label: 'Recipes', href: '/recipes', icon: UtensilsCrossed },
+  { label: 'Exams', href: '/exams', icon: FileText },
+  { label: 'Psychometric', href: '/psychometric', icon: Brain },
+  { label: 'Leaderboard', href: '/leaderboard', icon: BarChart3 },
 ]
 
 const adminNavItems = [
