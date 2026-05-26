@@ -24,17 +24,8 @@ export default function LoginPage() {
     setLoading(true)
 
     try {
-      // Demo mode: allow any email/password to log in
-      if (email && password.length >= 6) {
-        // Store demo session with proper cookie settings
-        document.cookie = `__session=${btoa(email)}; path=/; max-age=86400; SameSite=Lax`
-        // Small delay to ensure cookie is set before redirect
-        setTimeout(() => {
-          router.push('/dashboard')
-        }, 100)
-      } else {
-        setError('Please enter valid email and password (min 6 characters)')
-      }
+      await login(email, password)
+      router.push('/dashboard')
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Login failed. Please try again.')
     } finally {

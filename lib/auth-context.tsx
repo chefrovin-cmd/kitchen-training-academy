@@ -1,10 +1,7 @@
 'use client'
 
 import React, { createContext, useContext, useEffect, useState } from 'react'
-import { onAuthStateChanged } from 'firebase/auth'
-import { auth } from './firebase'
-import { authService } from './auth-service'
-import { User, AuthContextType, UserRole } from './types'
+import { User, AuthContextType } from './types'
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
@@ -13,37 +10,36 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  // Initialize auth state
+  // Initialize auth state from localStorage
   useEffect(() => {
     try {
-      // Check for demo session cookie
-      const sessionCookie = document.cookie
-        .split('; ')
-        .find(row => row.startsWith('__session='))
-      
-      if (sessionCookie) {
-        const email = atob(sessionCookie.split('=')[1])
-        setUser({
-          uid: email,
-          email,
-          name: email.split('@')[0],
-          role: 'staff',
-          joinedAt: new Date(),
-        } as User)
+      const stored = localStorage.getItem('kp_user')
+      if (stored) {
+        setUser(JSON.parse(stored))
       }
-      setLoading(false)
     } catch (err) {
-      console.warn('[v0] Demo auth initialization')
+      console.warn('[v0] Auth init error')
+    } finally {
       setLoading(false)
     }
   }, [])
 
   const login = async (email: string, password: string) => {
+    setError(null)
+    setLoading(true)
     try {
-      setError(null)
-      setLoading(true)
-      await authService.login(email, password)
-      // User state will be updated by onAuthStateChanged listener
+      if (!email || password.length < 6) {
+        throw new Error('Invalid credentials')
+      }
+      const newUser: User = {
+        uid: email,
+        email,
+        name: email.split('@')[0],
+        role: 'staff',
+        joinedAt: new Date(),
+      }
+      setUser(newUser)
+      localStorage.setItem('kp_user', JSON.stringify(newUser))
     } catch (err: any) {
       setError(err.message)
       throw err
@@ -53,11 +49,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   const signup = async (email: string, password: string, displayName: string) => {
+    setError(null)
+    setLoading(true)
     try {
-      setError(null)
-      setLoading(true)
-      await authService.signup(email, password, displayName)
-      // User state will be updated by onAuthStateChanged listener
+      if (!email || !displayName || password.length < 6) {
+        throw new Error('Invalid details')
+      }
+      const newUser: User = {
+        uid: email,
+        email,
+        name: displayName,
+        role: 'staff',
+        joinedAt: new Date(),
+      }
+      setUser(newUser)
+      localStorage.setItem('kp_user', JSON.stringify(newUser))
     } catch (err: any) {
       setError(err.message)
       throw err
@@ -67,11 +73,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   const logout = async () => {
+    setError(null)
+    setLoading(true)
     try {
-      setError(null)
-      setLoading(true)
-      // Clear demo session cookie
-      document.cookie = '__session=; path=/; max-age=0'
+      localStorage.removeItem('kp_user')
       setUser(null)
     } catch (err: any) {
       setError(err.message)
@@ -81,33 +86,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
-  const updateUserRole = async (uid: string, role: UserRole) => {
-    try {
-      setError(null)
-      await authService.updateUserRole(uid, role)
-      // Refresh user data if updating current user
-      if (user?.uid === uid) {
-        const updated = await authService.getUserData(uid)
-        if (updated) setUser(updated)
-      }
-    } catch (err: any) {
-      setError(err.message)
-      throw err
-    }
-  }
-
   return (
-    <AuthContext.Provider
-      value={{
-        user,
-        loading,
-        error,
-        login,
-        signup,
-        logout,
-        updateUserRole,
-      }}
-    >
+    <AuthContext.Provider value={{ user, loading, error, login, signup, logout }}>
       {children}
     </AuthContext.Provider>
   )
@@ -115,7 +95,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
 export function useAuth() {
   const context = useContext(AuthContext)
-  if (context === undefined) {
+  if (!context) {
     throw new Error('useAuth must be used within AuthProvider')
   }
   return context
