@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -16,6 +17,7 @@ interface DashboardStats {
 }
 
 export default function DashboardPage() {
+  const router = useRouter()
   const [stats, setStats] = useState<DashboardStats>({
     pointsEarned: 0,
     level: 'Trainee',
@@ -169,21 +171,25 @@ export default function DashboardPage() {
               <CardTitle>Quick Actions</CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
-              <Button className="w-full justify-start" variant="ghost">
+              <Button className="w-full justify-start" variant="ghost" onClick={() => router.push('/courses')}>
                 <BookOpen className="w-4 h-4 mr-2" />
                 Browse Courses
               </Button>
-              <Button className="w-full justify-start" variant="ghost">
+              <Button className="w-full justify-start" variant="ghost" onClick={() => router.push('/exams')}>
                 <Award className="w-4 h-4 mr-2" />
                 Take Exam
               </Button>
-              <Button className="w-full justify-start" variant="ghost">
+              <Button className="w-full justify-start" variant="ghost" onClick={() => router.push('/recipes')}>
                 <Flame className="w-4 h-4 mr-2" />
                 View Recipes
               </Button>
-              <Button className="w-full justify-start" variant="ghost">
+              <Button className="w-full justify-start" variant="ghost" onClick={() => router.push('/leaderboard')}>
                 <Trophy className="w-4 h-4 mr-2" />
                 Leaderboard
+              </Button>
+              <Button className="w-full justify-start mt-4" variant="default" onClick={() => router.push('/psychometric')}>
+                <Flame className="w-4 h-4 mr-2" />
+                Start Challenge
               </Button>
             </CardContent>
           </Card>

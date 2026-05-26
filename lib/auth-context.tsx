@@ -1,11 +1,9 @@
 'use client'
 
-import React, { createContext, useContext, useEffect, useState } from 'react'
-import { User, AuthContextType } from './types'
-
-const AuthContext = createContext<AuthContextType | undefined>(undefined)
+import { useRouter } from 'next/navigation'
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
+  const router = useRouter()
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -78,6 +76,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       localStorage.removeItem('kp_user')
       setUser(null)
+      router.push('/login')
     } catch (err: any) {
       setError(err.message)
       throw err
