@@ -9,3 +9,4 @@ const firebaseConfig = {
   appId: "1:311521694506:web:86cf3b763ae91056430453",
   measurementId: "G-P5E7BH5V5P"
 };
+pnpm add @vercel/speed-insights
